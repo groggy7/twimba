@@ -14,7 +14,7 @@ document.addEventListener('click', function(e){
     else if(e.target.id === 'tweet-btn'){
         handleTweetBtnClick()
     } else if (e.target.classList.contains('reply-btn')) {
-        handleReplyBtnClick(e.target.dataset.reply)
+        handleReplyBtnClick(e.target.dataset.replyTweet)
     }
 })
  
@@ -75,8 +75,7 @@ function handleTweetBtnClick(){
 }
 
 function handleReplyBtnClick(tweetId) {
-    const replyText = document.querySelector('.reply-text').value;
-    console.log(replyText)
+    const replyText = document.getElementById(tweetId).value;
     if(replyText) {
         const replyTweet = {
             handle: `@Scrimba`,
@@ -84,10 +83,12 @@ function handleReplyBtnClick(tweetId) {
             tweetText: replyText,
         }
 
-        const matchedTweet = tweetsData.filter((tweet) => tweet.uuid === tweetId)
-        console.log("matched tweet: " + matchedTweet)
+        const matchedTweet = tweetsData.filter((tweet) => tweet.uuid === tweetId)[0]
         matchedTweet.replies.push(replyTweet)
-        console.log(matchedTweet)
+        render()
+        document.getElementById(`replies-${tweetId}`).classList.remove('hidden')
+        document.getElementById(`reply-${tweetId}`).classList.remove('hidden')
+        document.getElementById(tweetId).value = ''
     } else {
         console.log('write reply text first');
     }
@@ -109,7 +110,7 @@ function getFeedHtml(){
         if (tweet.isRetweeted){
             retweetIconClass = 'retweeted'
         }
-        
+
         let repliesHtml = ''
         
         if(tweet.replies.length > 0){
@@ -165,9 +166,10 @@ function getFeedHtml(){
                     <img src="./images/scrimbalogo.png" class="profile-pic">
                     <textarea 
                     class="reply-text"
+                    id="${tweet.uuid}"
                     placeholder="Reply this tweet"></textarea>
                 </div>
-                <button class="reply-btn" data-reply="${tweet.uuid}">Reply</button>
+                <button class="reply-btn" data-reply-tweet="${tweet.uuid}">Reply</button>
             </div>
         </div>
         `
