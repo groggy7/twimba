@@ -110,6 +110,9 @@ button{
     font-weight: 500;
     color: #555;
     margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .tweet-text{
@@ -150,4 +153,8 @@ button{
 /* utility */
 .hidden{
     display: none;
+}
+
+.delete-tweet-icon:hover {
+    color: red;
 }

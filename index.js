@@ -15,6 +15,11 @@ document.addEventListener('click', function(e){
         handleTweetBtnClick()
     } else if (e.target.classList.contains('reply-btn')) {
         handleReplyBtnClick(e.target.dataset.replyTweet)
+    } else if (e.target.classList.contains('remove-reply')) {
+        handleRemoveReplyClick(
+            e.target.dataset.replyResponse,
+            e.target.dataset.replyPost
+        )
     }
 })
  
@@ -81,6 +86,8 @@ function handleReplyBtnClick(tweetId) {
             handle: `@Scrimba`,
             profilePic: `images/scrimbalogo.png`,
             tweetText: replyText,
+            uuid: uuidv4(),
+            isMyReply: true
         }
 
         const matchedTweet = tweetsData.filter((tweet) => tweet.uuid === tweetId)[0]
@@ -91,6 +98,19 @@ function handleReplyBtnClick(tweetId) {
         document.getElementById(tweetId).value = ''
     } else {
         console.log('write reply text first');
+    }
+}
+
+function handleRemoveReplyClick(replyTweetUUID, repliedTweetUUID) {
+    const repliedTweet = tweetsData.find((tweet) => tweet.uuid === repliedTweetUUID);
+    
+    if(repliedTweet) {
+        repliedTweet.replies = repliedTweet.replies.filter((reply) => reply.uuid !== replyTweetUUID)
+        render();
+        document.getElementById(`replies-${repliedTweetUUID}`).classList.remove('hidden')
+        document.getElementById(`reply-${repliedTweetUUID}`).classList.remove('hidden')
+    } else {
+        console.log('Replied tweet not found');
     }
 }
 
@@ -120,9 +140,14 @@ function getFeedHtml(){
                     <div class="tweet-inner">
                         <img src="${reply.profilePic}" class="profile-pic">
                             <div>
-                                <p class="handle">${reply.handle}</p>
+                                <p class="handle">
+                                    ${reply.handle}
+                                    ${reply.isMyReply ? `<i class="fa fa-times remove-reply" data-reply-response="${reply.uuid}" data-reply-post="${tweet.uuid}"></i>` : ''}
+                                </p>
                                 <p class="tweet-text">${reply.tweetText}</p>
+                                
                             </div>
+                            
                         </div>
                 </div>
                 `
@@ -182,4 +207,3 @@ function render(){
 }
 
 render()
-
