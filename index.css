@@ -31,9 +31,10 @@ i{
 
 /* layout */
 
-main, header{
-    width: 290px;
+.container {
+    width: 300px;
     margin: 0 auto;
+    padding: 12px;
 }
 
 header{

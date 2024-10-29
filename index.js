@@ -13,9 +13,14 @@ document.addEventListener('click', function(e){
     }
     else if(e.target.id === 'tweet-btn'){
         handleTweetBtnClick()
-    } else if (e.target.classList.contains('reply-btn')) {
+    } 
+    else if (e.target.classList.contains('reply-btn')) {
         handleReplyBtnClick(e.target.dataset.replyTweet)
-    } else if (e.target.classList.contains('remove-reply')) {
+    } 
+    else if (e.target.classList.contains('remove-tweet')) {
+        handleRemoveTweetClick(e.target.dataset.removeTweet)
+    } 
+    else if (e.target.classList.contains('remove-reply')) {
         handleRemoveReplyClick(
             e.target.dataset.replyResponse,
             e.target.dataset.replyPost
@@ -71,7 +76,8 @@ function handleTweetBtnClick(){
             replies: [],
             isLiked: false,
             isRetweeted: false,
-            uuid: uuidv4()
+            uuid: uuidv4(),
+            isMyTweet: true
         })
     render()
     tweetInput.value = ''
@@ -99,6 +105,14 @@ function handleReplyBtnClick(tweetId) {
     } else {
         console.log('write reply text first');
     }
+}
+
+function handleRemoveTweetClick(tweetId) {
+    const tweetIndex = tweetsData.findIndex((tweet) => tweet.uuid === tweetId);
+    if (tweetIndex !== -1) {
+        tweetsData.splice(tweetIndex, 1);
+    }
+    render();
 }
 
 function handleRemoveReplyClick(replyTweetUUID, repliedTweetUUID) {
@@ -159,7 +173,10 @@ function getFeedHtml(){
             <div class="tweet-inner">
                 <img src="${tweet.profilePic}" class="profile-pic">
                 <div>
-                    <p class="handle">${tweet.handle}</p>
+                    <p class="handle">
+                    ${tweet.handle}
+                    ${tweet.isMyTweet ? `<i class="fa fa-times remove-tweet" data-remove-tweet="${tweet.uuid}"></i>` : ''}
+                    </p>
                     <p class="tweet-text">${tweet.tweetText}</p>
                     <div class="tweet-details">
                         <span class="tweet-detail">
